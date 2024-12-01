@@ -22,26 +22,21 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'name' => 'required',
-            'phone' => 'required'
+            'username' => 'required',
+            'password' => 'required'
         ], [
-            'name.required' => 'Nama tidak boleh kosong',
-            'phone.required' => 'Nomor telepon tidak boleh kosong'
+            'username.required' => 'Username tidak boleh kosong',
+            'password.required' => 'Password tidak boleh kosong'
         ]);
 
-        $user = User::where('name', $credentials['name'])
-                   ->where('phone', $credentials['phone'])
-                   ->first();
-
-        if ($user) {
-            Auth::login($user);
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/')->with('success', 'Berhasil login!');
         }
 
         return back()->withErrors([
-            'name' => 'Nama atau nomor telepon salah',
-        ])->withInput($request->only('name'));
+            'username' => 'Username atau password salah',
+        ])->withInput($request->only('username'));
     }
 
     public function register(Request $request)
