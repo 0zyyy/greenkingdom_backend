@@ -5,14 +5,14 @@ namespace App\Models;
 use Binafy\LaravelCart\Cartable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Binafy\LaravelCart\Models\CartItem;
 
 class Product extends Model implements Cartable
 {
     use HasFactory;
     public function __construct(array $attributes = [])
     {
-        $this->with = ["category",'image'];
+        $this->with = ["category","image"];
     }
 
     protected $guarded = ["id"];
@@ -25,7 +25,7 @@ class Product extends Model implements Cartable
 
     public function image()
     {
-        return $this->hasOne(Image::class,"product_id","id");
+        return $this->hasOne(Image::class);
     }
 
     public function wishlists()

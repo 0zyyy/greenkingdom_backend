@@ -17,25 +17,14 @@
 
             <h2 class="text-2xl font-medium text-[#55B76B] mb-2">Create an account</h2>
             <p class="text-gray-600 mb-8">Enter your details below</p>
-
-            @if ($errors->any())
-            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                <ul class="list-disc list-inside">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
-
             @if(session('success'))
-                <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
                     {{ session('success') }}
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
                     {{ session('error') }}
                 </div>
             @endif
@@ -52,6 +41,11 @@
                         class="w-full px-3 py-2 border-b border-gray-300 focus:border-[#55B76B] focus:outline-none"
                         required
                     >
+                    @if($errors->has('name'))
+                        <div class="mt-2 text-sm text-warning">
+                            {{ $errors->first('name') }}
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Username Input -->
@@ -64,6 +58,11 @@
                         class="w-full px-3 py-2 border-b border-gray-300 focus:border-[#55B76B] focus:outline-none"
                         required
                     >
+                    @if($errors->has('username'))
+                        <div class="mt-2 text-sm text-warning">
+                            {{ $errors->first('username') }}
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Email Input -->
@@ -76,6 +75,11 @@
                         class="w-full px-3 py-2 border-b border-gray-300 focus:border-[#55B76B] focus:outline-none"
                         required
                     >
+                    @if($errors->has('email'))
+                        <div class="mt-2 text-sm text-warning">
+                            {{ $errors->first('email') }}
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Phone Number Input -->
@@ -88,6 +92,11 @@
                         class="w-full px-3 py-2 border-b border-gray-300 focus:border-[#55B76B] focus:outline-none"
                         required
                     >
+                    @if($errors->has('phone'))
+                        <div class="mt-2 text-sm text-warning">
+                            {{ $errors->first('phone') }}
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Password Input -->
@@ -99,6 +108,11 @@
                         class="w-full px-3 py-2 border-b border-gray-300 focus:border-[#55B76B] focus:outline-none"
                         required
                     >
+                    @if($errors->has('password'))
+                        <div class="mt-2 text-sm text-warning">
+                            {{ $errors->first('password') }}
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Create Account Button -->
