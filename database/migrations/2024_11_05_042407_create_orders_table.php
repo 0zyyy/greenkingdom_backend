@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('discount_amount', 12, 2)->default(0);
             $table->foreignId('coupon_id')->nullable()->constrained()->onDelete('set null');
             $table->enum('status', ['pending', 'processing', 'completed', 'cancelled', 'refunded'])->default('pending');
+            $table->string('payment_method');
             $table->string('shipping_address');
             $table->string('shipping_city');
             $table->string('shipping_state');
@@ -32,7 +33,7 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('product_id')->constrained("products","id_produk")->onDelete('cascade');
             $table->integer('quantity');
             $table->decimal('unit_price', 12, 2);
             $table->decimal('subtotal', 12, 2);
