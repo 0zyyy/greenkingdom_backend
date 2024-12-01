@@ -7,6 +7,9 @@ use App\Models\Category;
 use App\Http\Controllers\AuthController;
 use Binafy\LaravelCart\Models\Cart;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,9 +22,7 @@ use App\Http\Controllers\CartController;
 */
 
 // Home
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [ProductController::class, 'contohProduk'])->name('home');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -36,12 +37,6 @@ Route::middleware('auth')->group(function () {
 
 // Products
 Route::get('/products', [ProductController::class, 'catalog'])->name('catalog');
-Route::get('/products/cart', function(){
-    return view('products.cart');
-})->name('products.cart');
-Route::get('/products/checkout', function(){
-    return view('products.checkout');
-})->name('products.checkout');
 
 // Manage
 Route::get('/manage', [ProductController::class, 'index'])->name('manage.product');
@@ -60,7 +55,7 @@ Route::get('/product/edit/{id}', function($id){
 Route::put('/products/{id}', [ProductController::class, 'update'])->name(name: 'product.update');
 
 Route::post('/product', [ProductController::class, 'create'])->name('product.store');
-Route::delete('/product', [ProductController::class, 'delete'])->name('product.delete');
+Route::delete('/product/{id}', [ProductController::class, 'delete'])->name('product.delete');
 
 // Cart Routes
 Route::middleware(['auth'])->group(function () {
@@ -69,4 +64,13 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+    Route::get('/checkout', [CartController::class, 'showCheckout'])->name('products.checkout');
+    Route::post('/checkout', [CartController::class, 'checkout'])->name('products.checkout.store');
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Order
+    Route::get('/orders', [OrderController::class, 'show'])->name('orders.index');
 });
