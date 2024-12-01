@@ -16,37 +16,41 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'email' => 'admin@prayfinds.com',
-        //     'username' => 'admin',
-        //     'phone' => '081234567890',
-        //     'password' => bcrypt('admin'),
-        //     'role' => 'admin',
-        // ]);
+        User::factory()->create([
+            'email' => 'admin@prayfinds.com',
+            'username' => 'admin',
+            'first_name' => 'Admin',
+            'last_name' => 'Admin',
+            'phone' => '081234567890',
+            'password' => bcrypt('admin'),
+            'role' => 'admin',
+        ]);
 
-        // User::factory()->create([
-        //     'email' => 'user@prayfinds.com',
-        //     'username' => 'testuser',
-        //     'phone' => '081234567890',
-        //     'password' => bcrypt("testuser"),
-        //     'role' => 'user',
-        // ]);
+        User::factory()->create([
+            'email' => 'user@prayfinds.com',
+            'username' => 'testuser',
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'phone' => '089123153454',
+            'password' => bcrypt("testuser"),
+            'role' => 'user',
+        ]);
 
-        // Category::create([
-        //     'nama_kategori' => 'bags',
-        // ]);
-        // Category::create([
-        //     'nama_kategori' => 'outfit',
-        // ]);
-        // Category::create([
-        //     'nama_kategori' => 'decoration',
-        // ]);
-        // Category::create([
-        //     'nama_kategori' => 'lamp',
-        // ]);
-        // Category::create([
-        //     'nama_kategori' => 'lighting',
-        // ]);
+        Category::create([
+            'nama_kategori' => 'bags',
+        ]);
+        Category::create([
+            'nama_kategori' => 'outfit',
+        ]);
+        Category::create([
+            'nama_kategori' => 'decoration',
+        ]);
+        Category::create([
+            'nama_kategori' => 'lamp',
+        ]);
+        Category::create([
+            'nama_kategori' => 'lighting',
+        ]);
 
         $productNames = [
             'Bamboo Toothbrush',

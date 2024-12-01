@@ -166,7 +166,6 @@ class ProductController extends Controller
     {
         try {
             $product = Product::where('id_produk', $id)->firstOrFail();
-            
             // Delete images if they exist
             if ($product->image) {
                 foreach (json_decode($product->image->image_path) as $imagePath) {
@@ -210,24 +209,7 @@ class ProductController extends Controller
     public function contohProduk()
     {
         $products = Product::limit(8)->get();
-        $mukenah = Product::where("category_id", 1)->count();
-        $sajadah = Product::where("category_id", 2)->count();
-        $bajuKoko = Product::where("category_id", 3)->count();
-        $sarung = Product::where("category_id", 4)->count();
-        $jilbab = Product::where("category_id", 5)->count();
-        return response()->json([
-            'status' => true,
-            'message' => 'Product Found',
-            'total' => count($products),
-            'data' => $products,
-            'category' => [
-                '1' => $mukenah,
-                '2' => $sarung,
-                '3' => $jilbab,
-                '4' => $bajuKoko,
-                '5' => $sajadah,
-            ]
-        ], 200);
+        return view("welcome", compact("products"));
     }
 
     public function catalog(Request $request)
@@ -237,11 +219,10 @@ class ProductController extends Controller
         $products = QueryBuilder::for(Product::class)
             ->allowedSorts(['created_at', 'harga'])
             ->allowedFilters(['category_id'])
-            ->with(['category'])
+            ->with(['category', 'image'])
             ->paginate($perPage);
 
         $categories = Category::all();
-        
         return view("products.catalog", compact("products", "categories"));
     }
 
