@@ -28,7 +28,6 @@
                                     class="w-full p-3 bg-[#F5F5F5] rounded-lg border-0 focus:ring-2 focus:ring-custom-green transition-all duration-200"
                                     name="first_name">
                             </div>
-
                             <div>
                                 <label class="block text-sm font-medium text-gray-600 mb-2">Last Name</label>
                                 <input type="text"
@@ -94,17 +93,47 @@
                                             <p class="text-sm text-gray-500">Quantity: {{ $item['quantity'] }}</p>
                                         </div>
                                     </div>
-                                    <span
-                                        class="font-medium text-[#333333]">Rp.{{ number_format($item['price'], 0, ',', '.') }}</span>
+                                    <div class="text-right">
+                                        @if($item['amount_discount'] > 0)
+                                            <span class="line-through text-gray-400 text-sm">
+                                                Rp.{{ number_format($item['price'], 0, ',', '.') }}
+                                            </span>
+                                            <br>
+                                            <span class="font-medium text-[#00B207]">
+                                                Rp.{{ number_format($item['discounted_price'], 0, ',', '.') }}
+                                            </span>
+                                            <span class="text-xs text-[#00B207]">
+                                                (-{{ number_format($item['amount_discount'], 0) }}%)
+                                            </span>
+                                        @else
+                                            <span class="font-medium text-[#333333]">
+                                                Rp.{{ number_format($item['price'], 0, ',', '.') }}
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
 
                         <!-- Price Summary -->
                         <div class="space-y-3 border-t border-gray-200 pt-4">
+                            @php
+                                $subtotal = array_reduce(
+                                    $cartItems,
+                                    function ($carry, $item) {
+                                        $price = $item['amount_discount'] > 0 
+                                            ? $item['discounted_price']
+                                            : $item['price'];
+                                        return $carry + ($price * $item['quantity']);
+                                    },
+                                    0,
+                                );
+                                
+                                $total = $subtotal; // Add shipping cost or other fees if needed
+                            @endphp
                             <div class="flex justify-between text-[#333333]">
                                 <span>Subtotal</span>
-                                <span class="font-medium">Rp.{{ number_format($total, 0, ',', '.') }}</span>
+                                <span class="font-medium">Rp.{{ number_format($subtotal, 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-[#333333]">Shipping</span>
@@ -120,7 +149,6 @@
                     <!-- Payment Methods -->
                     <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8">
                         <h3 class="text-lg sm:text-xl font-medium text-[#333333] mb-6">Payment Method</h3>
-
                         <div class="space-y-4">
                             <div
                                 class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 space-x-0 sm:space-x-4 p-4 bg-[#F5F5F5] rounded-lg">

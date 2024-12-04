@@ -35,6 +35,9 @@ class Product extends Model implements Cartable
 
     public function getPrice(): float
     {
+        if($this->amount_discount > 0){
+            return $this->harga - ($this->amount_discount / 100 * $this->harga);
+        }
         return $this->harga;
     }
 

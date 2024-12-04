@@ -48,8 +48,22 @@
                                             <span class="font-medium text-[#333333]">{{ $item['name'] }}</span>
                                         </div>
                                     </td>
-                                    <td class="text-center text-[#333333]">Rp.
-                                        {{ number_format($item['price'], 0, ',', '.') }}</td>
+                                    <td class="text-center text-[#333333]">
+                                        @if($item['amount_discount'] > 0)
+                                            <span class="line-through text-gray-400">
+                                                Rp. {{ number_format($item['price'], 0, ',', '.') }}
+                                            </span>
+                                            <br>
+                                            <span class="text-[#00B207]">
+                                                Rp. {{ number_format($item['discounted_price'], 0, ',', '.') }}
+                                            </span>
+                                            <span class="text-xs text-[#00B207]">
+                                                (-{{ number_format($item['amount_discount'])}}%)
+                                            </span>
+                                        @else
+                                            Rp. {{ number_format($item['discounted_price'], 0, ',', '.') }}
+                                        @endif
+                                    </td>
                                     <td class="text-center">
                                         <div class="flex items-center justify-center">
                                             <div class="flex items-center bg-white rounded-full border border-[#E6E6E6]">
@@ -68,8 +82,15 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-center text-[#333333]">Rp.
-                                        {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</td>
+                                    <td class="text-center text-[#333333]">
+                                        @php
+                                            $itemPrice = $item['amount_discount'] > 0 
+                                                ? $item['discounted_price']
+                                                : $item['price'];
+                                            $subtotal = $itemPrice * $item['quantity'];
+                                        @endphp
+                                        Rp. {{ number_format($subtotal, 0, ',', '.') }}
+                                    </td>
                                     <td class="text-center">
                                         <div class="flex items-center justify-end space-x-4">
                                             <form action="{{ route('cart.remove', $item['itemable_id']) }}" method="POST">
@@ -100,8 +121,21 @@
                                         alt="{{ $item['name'] }}" class="w-24 h-24 object-cover rounded">
                                     <div>
                                         <h3 class="font-medium text-[#333333]">{{ $item['name'] }}</h3>
-                                        <p class="text-[#333333] mt-1">Rp. {{ number_format($item['price'], 0, ',', '.') }}
-                                        </p>
+                                        @if($item['amount_discount'] > 0)
+                                            <p class="line-through text-gray-400">
+                                                Rp. {{ number_format($item['price'], 0, ',', '.') }}
+                                            </p>
+                                            <p class="text-[#00B207]">
+                                                Rp. {{ number_format($item['discounted_price'], 0, ',', '.') }}
+                                            </p>
+                                            <p class="text-xs text-[#00B207]">
+                                                (-{{ number_format($item['amount_discount'], 0) }}%)
+                                            </p>
+                                        @else
+                                            <p class="text-[#333333] mt-1">
+                                                Rp. {{ number_format($item['price'], 0, ',', '.') }}
+                                            </p>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +197,10 @@
                                 $subtotal = array_reduce(
                                     $cartItems,
                                     function ($carry, $item) {
-                                        return $carry + $item['price'] * $item['quantity'];
+                                        $price = $item['amount_discount'] > 0 
+                                            ? $item['discounted_price']
+                                            : $item['price'];
+                                        return $carry + ($price * $item['quantity']);
                                     },
                                     0,
                                 );

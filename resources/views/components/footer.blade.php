@@ -1,4 +1,4 @@
-<footer class="bg-[#333333] text-white p-10">
+<footer class="bg-[#333333] text-white p-10 mt-auto">
     <div class="mb-8 flex justify-start">
         @include("components.icon")
     </div>
@@ -8,11 +8,11 @@
         <div>
             <h2 class="text-lg font-semibold mb-4">Pages</h2>
             <div class="grid grid-cols-1 gap-2">
-                <a class="hover:text-gray-300">Home</a>
-                <a  class="hover:text-gray-300">Shop</a>
-                <a  class="hover:text-gray-300">Categories</a>
-                <a  class="hover:text-gray-300">About us</a>
-                <a  class="hover:text-gray-300">Contact us</a>
+                <a href="{{ route('home') }}" class="hover:text-[#008000]">Home</a>
+                <a href="{{ route('catalog') }}" class="hover:text-[#008000]">Shop</a>
+                <a class="hover:text-[#008000]">Categories</a>
+                <a href="{{ route('home') }}/#about" class="hover:text-[#008000]">About us</a>
+                <a href="{{ route('home') }}/#contact" class="hover:text-[#008000]">Contact us</a>
             </div>
             
             <!-- Social Media Icons -->

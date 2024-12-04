@@ -126,10 +126,30 @@
                             </a>
                         </h3>
                         <div class="flex justify-between items-center mt-1">
-                            <p class="text-sm font-semibold text-[#333333] font-bold">Rp.
-                                {{ number_format($product->harga, 0, ',', '.') }}</p>
+                            <div>
+                                @if($product->amount_discount > 0)
+                                    <p class="text-sm line-through text-gray-400">
+                                        Rp. {{ number_format($product->harga, 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-sm font-semibold text-[#00B207]">
+                                        Rp. {{ number_format(max(0, $product->harga - $product->amount_discount), 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-xs text-[#00B207]">
+                                        -{{ number_format(($product->amount_discount / $product->harga) * 100, 0) }}%
+                                    </p>
+                                @else
+                                    <p class="text-sm font-semibold text-[#333333] font-bold">
+                                        Rp. {{ number_format($product->harga, 0, ',', '.') }}
+                                    </p>
+                                @endif
+                            </div>
                             <p class="text-sm text-gray-500">235 Reviews</p>
                         </div>
+                        @if($product->amount_discount > 0)
+                            <div class="absolute top-4 right-4 bg-[#00B207] text-white px-2 py-1 rounded-full text-xs">
+                                Save Rp. {{ number_format($product->amount_discount, 0, ',', '.') }}
+                            </div>
+                        @endif
                         <div class="relative flex justify-center items-center">
                             <button
                                 class="w-full mt-3 mb-3 bg-[#55B76B] text-white py-1 px-2 rounded-md hover:bg-[#3B8B4B] transition-colors w-[149px] font-bold">
@@ -671,7 +691,7 @@
                         </p>
 
                         <!-- Login Form -->
-                        <form class="space-y-6" method="POST" action="{{ route('login') }}">
+                        <form class="space-y-6" method="POST" action="{{ route('user.login') }}">
                             @csrf
                             <!-- Name Input -->
                             <div>

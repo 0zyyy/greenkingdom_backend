@@ -102,21 +102,22 @@ class CartController extends Controller
                           ->map(fn($item) => [
                             'id' => $item->itemable_id, //product id
                               'name' => $item->itemable->nama_produk,
-                              'price' => $item->itemable->getPrice(),
+                              'price' => $item->itemable->harga,
                               'deskripsi' => $item->itemable->deskripsi,
                               'quantity' => $item->quantity,
                               'image' => $item->itemable->image,
+                              'discounted_price' => max(0, $item->itemable->harga - (($item->itemable->amount_discount / 100) * $item->itemable->harga)),
+                              'amount_discount' => $item->itemable->amount_discount ?? 0,
                               'itemable_id' => $item->itemable_id, //product id
                           ])
                           ->all(); 
             return view('products.cart', compact('cartItems'));
         }
-        $cartItems = [];
         return view('products.cart', compact('cartItems'));
     }
 
     public function showCheckout()
-    {   
+    {
         $user = Auth::user();
         $cart = Cart::query()->where('user_id', $user->id)->first();
         if($cart){
@@ -124,12 +125,14 @@ class CartController extends Controller
             $cartItems = $items->filter(fn($item) => $item->itemable_type === Product::class)
                           ->map(fn($item) => [
                             'id' => $item->itemable_id, //product id
-                              'name' => $item->itemable->nama_produk,
-                              'price' => $item->itemable->getPrice(),
-                              'deskripsi' => $item->itemable->deskripsi,
-                              'quantity' => $item->quantity,
-                              'image' => $item->itemable->image,
-                              'itemable_id' => $item->itemable_id, //product id
+                            'name' => $item->itemable->nama_produk,
+                            'price' => $item->itemable->harga,
+                            'deskripsi' => $item->itemable->deskripsi,
+                            'quantity' => $item->quantity,
+                            'image' => $item->itemable->image,
+                            'discounted_price' => $item->itemable->getPrice(),
+                            'amount_discount' => $item->itemable->amount_discount ?? 0,
+                            'itemable_id' => $item->itemable_id, //product id
                           ])
                           ->all(); 
             $total = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cartItems));
@@ -168,7 +171,7 @@ class CartController extends Controller
                     'order_number' => 'ORD-' . time(), // Bisa diganti dengan format yang lebih baik
                     'status' => 'pending',
                     'total_amount' => $cart->items->sum(function($item) {
-                        return $item->itemable->harga * $item->quantity;
+                        return $item->itemable->getPrice() * $item->quantity;
                     }),
                     'shipping_cost' => 0,
                     'discount_amount' => 0,
@@ -194,8 +197,8 @@ class CartController extends Controller
                         'order_id' => $order->id,
                         'product_id' => $product->id_produk,
                         'quantity' => $cartItem->quantity,
-                        'unit_price' => $product->harga,
-                        'subtotal' => $product->harga * $cartItem->quantity
+                        'unit_price' => $product->getPrice(),
+                        'subtotal' => $product->getPrice() * $cartItem->quantity
                     ]);
 
                     // Update product stock

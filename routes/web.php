@@ -26,7 +26,10 @@ Route::get('/', [ProductController::class, 'contohProduk'])->name('home');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('user.login');
+    Route::get("/login", function(){
+        return redirect()->route('home');
+    });
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 });

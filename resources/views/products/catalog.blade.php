@@ -114,60 +114,61 @@
             <!-- Product Grid -->
             <div class="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">
                 @foreach ($products->items() as $product)
-                    <form action="{{ route('cart.add') }}" method="POST">
-                        @csrf
-                        @if (Auth::check())
-                            <input type="hidden" name="id_produk" value="{{ $product->id_produk }}">
-                            <input type="hidden" name="quantity" value=1>
-                            <div class="group relative flex flex-col">
-                                <div class="h-56 w-full overflow-hidden rounded-md bg-gray-200 lg:h-72 xl:h-80">
-                                    <img src="{{ $product->image ? $product->image->thumbnail_url : asset('images/icons/1.png') }}"
-                                        alt="Organic cotton tote bag" class="h-full w-full rounded-md rounded">
+                    <div class="group relative flex flex-col">
+                        <div class="h-56 w-full overflow-hidden rounded-md bg-gray-200 lg:h-72 xl:h-80 relative">
+                            <img src="{{ $product->image ? $product->image->thumbnail_url : asset('images/icons/1.png') }}"
+                                alt="{{ $product->nama_produk }}" class="h-full w-full rounded-md object-cover">
+                            @if($product->amount_discount > 0)
+                                <div class="absolute top-4 right-4 bg-[#00B207] text-white px-2 py-1 rounded-full text-xs">
+                                    -{{ number_format($product->amount_discount) }}%
                                 </div>
-                                <h3 class="mt-4 text-sm text-[#333333] font-medium">
-                                    <a href="#">
-                                        <span class="absolute inset-0"></span>
-                                        {{ $product->nama_produk }}
-                                    </a>
-                                </h3>
-                                <div class="flex justify-between items-center mt-1">
-                                    <p class="text-sm font-semibold text-[#333333] font-bold">Rp
-                                        {{ number_format($product->harga, 0, ',', '.') }}</p>
-                                    <p class="text-sm text-gray-500">235 Reviews</p>
-                                </div>
-                                <div class="relative flex justify-center items-center">
+                            @endif
+                        </div>
+                        <h3 class="mt-4 text-sm text-[#333333] font-medium">
+                            <a href="#">
+                                <span class="absolute inset-0"></span>
+                                {{ $product->nama_produk }}
+                            </a>
+                        </h3>
+                        <div class="flex justify-between items-center mt-1">
+                            <div>
+                                @if($product->amount_discount > 0)
+                                    <p class="text-sm line-through text-gray-400">
+                                        Rp. {{ number_format($product->harga, 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-sm font-semibold text-[#00B207]">
+                                        Rp. {{ number_format(max(0, $product->harga - ($product->harga * $product->amount_discount / 100)), 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-xs text-[#00B207]">
+                                        -{{ number_format($product->amount_discount) }}%
+                                    </p>
+                                @else
+                                    <p class="text-sm font-semibold text-[#333333] font-bold">
+                                        Rp. {{ number_format($product->harga, 0, ',', '.') }}
+                                    </p>
+                                @endif
+                            </div>
+                            <p class="text-sm text-gray-500">235 Reviews</p>
+                        </div>
+                        <div class="relative flex justify-center items-center">
+                            @if (Auth::check())
+                                <form action="{{ route('cart.add') }}" method="POST" class="w-full">
+                                    @csrf
+                                    <input type="hidden" name="id_produk" value="{{ $product->id_produk }}">
+                                    <input type="hidden" name="quantity" value=1>
                                     <button type="submit"
                                         class="w-full mt-3 mb-3 bg-[#55B76B] text-white py-1 px-2 text-center rounded-md hover:bg-[#3B8B4B] transition-colors w-[149px] font-bold">
                                         Add To Cart
                                     </button>
-                                </div>
-                            </div>
-                        @else
-                            <div class="group relative flex flex-col">
-                                <div class="h-56 w-full overflow-hidden rounded-md bg-gray-200 lg:h-72 xl:h-80">
-                                    <img src="{{ $product->image ? $product->image->thumbnail_url : asset('images/icons/1.png') }}"
-                                        alt="Organic cotton tote bag" class="h-full w-full rounded-md rounded">
-                                </div>
-                                <h3 class="mt-4 text-sm text-[#333333] font-medium">
-                                    <a href="#">
-                                        <span class="absolute inset-0"></span>
-                                        {{ $product->nama_produk }}
-                                    </a>
-                                </h3>
-                                <div class="flex justify-between items-center mt-1">
-                                    <p class="text-sm font-semibold text-[#333333] font-bold">Rp
-                                        {{ number_format($product->harga, 0, ',', '.') }}</p>
-                                    <p class="text-sm text-gray-500">235 Reviews</p>
-                                </div>
-                                <div class="relative flex justify-center items-center">
-                                    <a href="{{ route('home') }}/#login"
-                                        class="w-full mt-3 mb-3 bg-[#55B76B] text-white py-1 px-2 text-center rounded-md hover:bg-[#3B8B4B] transition-colors w-[149px] font-bold">
-                                        Buy Now
-                                    </a>
-                                </div>
-                            </div>
-                        @endif
-                    </form>
+                                </form>
+                            @else
+                                <a href="{{ route('home') }}/#login"
+                                    class="w-full mt-3 mb-3 bg-[#55B76B] text-white py-1 px-2 text-center rounded-md hover:bg-[#3B8B4B] transition-colors w-[149px] font-bold">
+                                    Buy Now
+                                </a>
+                            @endif
+                        </div>
+                    </div>
                 @endforeach
             </div>
 
