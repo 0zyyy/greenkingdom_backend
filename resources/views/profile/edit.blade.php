@@ -9,13 +9,24 @@
                 <div class="flex items-center">
                     <p class="mr-2">Welcome! {{ $user->first_name }} {{ $user->last_name }}</p>
                     <div class="relative group">
-                        <img src="{{ asset('images/default-avatar.jpg') }}" alt="Profile Picture"
-                            class="w-16 h-16 rounded-full object-cover border-2 border-[#4ade80]">
-                        <label
-                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
-                            <span class="text-white text-sm">Change Photo</span>
-                            <input type="file" name="avatar" class="hidden" accept="image/*">
-                        </label>
+                        <div class="w-32 h-32 rounded-full overflow-hidden">
+                            @if(auth()->user()->avatar)
+                                <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="Profile Picture" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                    <img src="{{ asset('images/icons/user.svg') }}" alt="Profile Picture" class="w-16 h-16">
+                                </div>
+                            @endif
+                        </div>
+                        
+                        <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data" id="avatarForm">
+                            @csrf
+                            @method('POST')
+                            <label class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                                <span class="text-[#008000] text-sm">Change Photo</span>
+                                <input type="file" name="avatar" class="hidden" accept="image/*" onchange="document.getElementById('avatarForm').submit()">
+                            </label>
+                        </form>
                     </div>
                 </div>
             </div>

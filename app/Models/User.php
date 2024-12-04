@@ -26,6 +26,7 @@ class User extends Authenticatable implements JWTSubject
         'address',
         'username',
         'phone',
+        'avatar',
     ];
 
     /**
@@ -63,5 +64,10 @@ class User extends Authenticatable implements JWTSubject
     public function wishlist()
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
