@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -76,5 +77,27 @@ class ProfileController extends Controller
                 ->withInput()
                 ->withErrors(['error' => $errorMessage]);
         }
+    }
+
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        // Delete old avatar if exists
+        if ($request->user()->avatar) {
+            Storage::disk('public')->delete($request->user()->avatar);
+        }
+
+        // Store new avatar
+        $path = $request->file('avatar')->store('avatars', 'public');
+        
+        // Update user avatar path in database
+        $request->user()->update([
+            'avatar' => $path
+        ]);
+
+        return back()->with('success', 'Profile picture updated successfully');
     }
 } 

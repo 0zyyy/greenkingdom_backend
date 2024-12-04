@@ -46,6 +46,16 @@
                                     @endif">
                                     {{ ucfirst($order->status) }}
                                 </span>
+                                @if($order->status === 'pending')
+                                    <form action="{{ route('orders.destroy', $order) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" onclick="return confirm('Are you sure you want to cancel this order?')"
+                                            class="text-red-600 hover:text-red-800 bg-[#FEE2E2] text-xs px-3 py-1 rounded-md">
+                                            Cancel Order
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </div>
 

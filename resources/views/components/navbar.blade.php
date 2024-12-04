@@ -14,8 +14,8 @@
                     <li><a href="{{ route('home') }}" class="font-semibold">Home</a></li>
                     <li><a href="{{ route('catalog') }}" class="font-semibold">Shop</a></li>
                     <li><a class="font-semibold">Categories</a></li>
-                    <li><a href="#about" class="font-semibold">About Us</a></li>
-                    <li><a href="#contact" class="font-semibold">Contact Us</a></li>
+                    <li><a href="{{ route('home') }}/#about" class="font-semibold">About Us</a></li>
+                    <li><a href="{{ route('home') }}/#contact" class="font-semibold">Contact Us</a></li>
                 </ul>
             </div>
             @include('components.icon')
@@ -40,15 +40,14 @@
                         </ul>
                     </details>
                 </li>
-                <li><a href="#about" class="font-semibold text-blue hover:bg-[#55B76B] hover:text-white">About Us</a>
+                <li><a href="{{ route('home') }}/#about" class="font-semibold text-blue hover:bg-[#55B76B] hover:text-white">About Us</a>
                 </li>
-                <li><a href="#contact" class="font-semibold text-blue hover:bg-[#55B76B] hover:text-white">Contact
+                <li><a href="{{ route('home') }}/#contact" class="font-semibold text-blue hover:bg-[#55B76B] hover:text-white">Contact
                         Us</a></li>
             </ul>
         </div>
         <div class="navbar-end gap-2">
             <!-- Shopping Cart -->
-
             @if (Auth::check())
                 <a href="{{ route('products.cart') }}" class="btn btn-ghost btn-circle">
                     <div class="indicator">
@@ -63,7 +62,11 @@
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                         <div class="w-10 rounded-full">
-                            <img alt="User Avatar" src="{{ asset('images/icons/user.svg') }}" />
+                            @if(auth()->user()->avatar)
+                                <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="Profile Picture" class="w-full h-full object-cover">
+                            @else
+                                <img alt="User Avatar" src="{{ asset('images/icons/user.svg') }}" />
+                            @endif
                         </div>
                     </div>
                     <ul tabindex="0"
@@ -75,6 +78,14 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
                                     </svg>
                                     Manage Products
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-2 py-2 px-4 hover:bg-[#55B76B] hover:text-white rounded-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    </svg>
+                                    Manage Orders
                                 </a>
                             </li>
                         @endif
