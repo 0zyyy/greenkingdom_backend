@@ -34,9 +34,9 @@ class AuthController extends Controller
             return redirect()->intended('/')->with('success', 'Berhasil login!');
         }
 
-        return back()->withErrors([
-            'username' => 'Username atau password salah',
-        ])->withInput($request->only('username'));
+        return back()
+            ->with('error', 'Username atau password salah')
+            ->withInput($request->only('username'));
     }
 
     public function register(Request $request)

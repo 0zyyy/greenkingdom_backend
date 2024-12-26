@@ -1,4 +1,4 @@
-<footer class="bg-[#333333] text-white p-10 mt-auto">
+<footer class="bg-[#333333] text-white p-10 mt-auto" id="footer">
     <div class="mb-8 flex justify-start">
         @include("components.icon")
     </div>

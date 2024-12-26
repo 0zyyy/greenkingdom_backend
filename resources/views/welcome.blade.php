@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Cihuyy</title>
+    <title>Green Kingdom</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/auth_logo.png') }}">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -132,10 +132,10 @@
                                         Rp. {{ number_format($product->harga, 0, ',', '.') }}
                                     </p>
                                     <p class="text-sm font-semibold text-[#00B207]">
-                                        Rp. {{ number_format(max(0, $product->harga - $product->amount_discount), 0, ',', '.') }}
+                                        Rp. {{ number_format($product->harga - ($product->harga * $product->amount_discount / 100), 0, ',', '.') }}
                                     </p>
                                     <p class="text-xs text-[#00B207]">
-                                        -{{ number_format(($product->amount_discount / $product->harga) * 100, 0) }}%
+                                        -{{ number_format($product->amount_discount) }}%
                                     </p>
                                 @else
                                     <p class="text-sm font-semibold text-[#333333] font-bold">
@@ -147,14 +147,14 @@
                         </div>
                         @if($product->amount_discount > 0)
                             <div class="absolute top-4 right-4 bg-[#00B207] text-white px-2 py-1 rounded-full text-xs">
-                                Save Rp. {{ number_format($product->amount_discount, 0, ',', '.') }}
+                                Save Rp. {{ number_format($product->harga * $product->amount_discount / 100, 0, ',', '.') }}
                             </div>
                         @endif
                         <div class="relative flex justify-center items-center">
-                            <button
-                                class="w-full mt-3 mb-3 bg-[#55B76B] text-white py-1 px-2 rounded-md hover:bg-[#3B8B4B] transition-colors w-[149px] font-bold">
+                            <a href="{{ route('catalog') }}"
+                                class="w-full mt-3 mb-3 bg-[#55B76B] text-white py-1 px-2 rounded-md hover:bg-[#3B8B4B] transition-colors w-[149px] font-bold text-center">
                                 Buy Now
-                            </button>
+                            </a>
                         </div>
                     </div>
                 @endforeach
@@ -242,272 +242,86 @@
                     <!-- Reviews Wrapper -->
                     <div id="reviewsContainer" class="overflow-hidden">
                         <div id="reviewsSlider" class="flex transition-transform duration-300 ease-in-out">
-                            <!-- Review Card 1 -->
-                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3">
-                                <div class="bg-white p-6 rounded-lg shadow-lg relative border border-[#55B76B] h-[300px] flex flex-col">
-                                    <div class="absolute top-4 right-4">
-                                        <div class="w-2 h-2 rounded-full bg-[#55B76B]"></div>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow">
-                                        <img src="{{ asset('images/image.png') }}" 
-                                             alt="Ariana G" 
-                                             class="w-20 h-20 rounded-full mb-4 object-cover">
-                                        <h3 class="text-lg font-bold text-[#333333] mb-2">Ariana G</h3>
-                                        <p class="text-sm text-center text-gray-600 mb-4 flex-grow">
-                                            "LUVV the totebag. Thanks GreenKingdom For making and be an E-commerce
-                                            for so many Eco-Friendly Product"
-                                        </p>
-                                        <div class="flex gap-1">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-5 h-5 text-[#FFA500]" fill="currentColor"
-                                                    viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-                                                    </path>
-                                                </svg>
-                                            @endfor
+                            @forelse($reviews as $review)
+                                <div class="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 px-3">
+                                    <div class="bg-white p-6 rounded-lg shadow-lg relative border border-[#55B76B] h-[300px] flex flex-col">
+                                        <div class="absolute top-4 right-4">
+                                            <div class="w-2 h-2 rounded-full bg-[#55B76B]"></div>
+                                        </div>
+                                        <div class="flex flex-col items-center flex-grow">
+                                            <img src="{{ $review->user->avatar == null ? asset('images/icons/user.svg') : asset('storage/' . $review->user->avatar) }}" 
+                                                 alt="{{ $review->user->name }}" 
+                                                 class="w-20 h-20 rounded-full mb-4 object-cover">
+                                            <h3 class="text-lg font-bold text-[#333333] mb-2">{{ $review->user->name }}</h3>
+                                            <p class="text-sm text-center text-[#666666] mb-4 flex-grow">
+                                                "{{ $review->content }}"
+                                            </p>
+                                            <div class="flex gap-1">
+                                                @for ($i = 0; $i < 5; $i++)
+                                                    <svg class="w-5 h-5 {{ $i < $review->rating ? 'text-[#FFA500]' : 'text-[#D1D5DB]' }}" 
+                                                         fill="currentColor" viewBox="0 0 20 20">
+                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                                    </svg>
+                                                @endfor
+                                            </div>
+                                            <p class="text-xs text-[#666666] mt-2">
+                                                {{ $review->created_at->diffForHumans() }}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Review Card 2 -->
-                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3">
-                                <div class="bg-white p-6 rounded-lg shadow-lg relative border border-[#55B76B] h-[300px] flex flex-col">
-                                    <div class="absolute top-4 right-4">
-                                        <div class="w-2 h-2 rounded-full bg-[#55B76B]"></div>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow">
-                                        <img src="{{ asset('images/image-1.png') }}" 
-                                             alt="Mark" 
-                                             class="w-20 h-20 rounded-full mb-4 object-cover">
-                                        <h3 class="text-lg font-bold text-[#333333] mb-2">Mark</h3>
-                                        <p class="text-sm text-center text-gray-600 mb-4 flex-grow">
-                                            "Bamboo Toothbrushes dari GreenKingdom daebak!!, i will make sure all my
-                                            members buy
-                                            this Eco-Friendly Bamboo Toothbrushes"
-                                        </p>
-                                        <div class="flex gap-1">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-5 h-5 text-[#FFA500]" fill="currentColor"
-                                                    viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-                                                    </path>
-                                                </svg>
-                                            @endfor
-                                        </div>
-                                    </div>
+                            @empty
+                                <div class="w-full text-center py-8">
+                                    <p class="text-[#666666]">No reviews yet. Be the first to review!</p>
                                 </div>
-                            </div>
-
-                            <!-- Review Card 3 -->
-                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3">
-                                <div class="bg-white p-6 rounded-lg shadow-lg relative border border-[#55B76B] h-[300px] flex flex-col">
-                                    <div class="absolute top-4 right-4">
-                                        <div class="w-2 h-2 rounded-full bg-[#55B76B]"></div>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow">
-                                        <img src="{{ asset('images/image-2.png') }}" 
-                                             alt="JK" 
-                                             class="w-20 h-20 rounded-full mb-4 object-cover">
-                                        <h3 class="text-lg font-bold text-[#333333] mb-2">JK</h3>
-                                        <p class="text-sm text-center text-gray-600 mb-4 flex-grow">
-                                            "I recently bought the Hemp Backpack from GreenKingdom, and I must say
-                                            it's a fantastic
-                                            investment. The durability of the hemp material is impressive, and I
-                                            feel good knowing
-                                            I'm choosing a sustainable alternative."
-                                        </p>
-                                        <div class="flex gap-1">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-5 h-5 text-[#FFA500]" fill="currentColor"
-                                                    viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-                                                    </path>
-                                                </svg>
-                                            @endfor
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Review Card 4 -->
-                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3">
-                                <div class="bg-white p-6 rounded-lg shadow-lg relative border border-[#55B76B] h-[300px] flex flex-col">
-                                    <div class="absolute top-4 right-4">
-                                        <div class="w-2 h-2 rounded-full bg-[#55B76B]"></div>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow">
-                                        <img src="{{ asset('images/image.png') }}" 
-                                             alt="Ariana G" 
-                                             class="w-20 h-20 rounded-full mb-4 object-cover">
-                                        <h3 class="text-lg font-bold text-[#333333] mb-2">Ariana G</h3>
-                                        <p class="text-sm text-center text-gray-600 mb-4 flex-grow">
-                                            "The reusable water bottle is perfect! No more plastic bottles for me. GreenKingdom is helping me live more sustainably."
-                                        </p>
-                                        <div class="flex gap-1">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-5 h-5 text-[#FFA500]" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                                </svg>
-                                            @endfor
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Review Card 5 -->
-                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3">
-                                <div class="bg-white p-6 rounded-lg shadow-lg relative border border-[#55B76B] h-[300px] flex flex-col">
-                                    <div class="absolute top-4 right-4">
-                                        <div class="w-2 h-2 rounded-full bg-[#55B76B]"></div>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow">
-                                        <img src="{{ asset('images/image-1.png') }}" 
-                                             alt="Mark" 
-                                             class="w-20 h-20 rounded-full mb-4 object-cover">
-                                        <h3 class="text-lg font-bold text-[#333333] mb-2">Mark</h3>
-                                        <p class="text-sm text-center text-gray-600 mb-4 flex-grow">
-                                            "Love their eco-friendly makeup removers! They work so well and I feel good about not creating waste."
-                                        </p>
-                                        <div class="flex gap-1">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-5 h-5 text-[#FFA500]" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                                </svg>
-                                            @endfor
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Review Card 6 -->
-                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3">
-                                <div class="bg-white p-6 rounded-lg shadow-lg relative border border-[#55B76B] h-[300px] flex flex-col">
-                                    <div class="absolute top-4 right-4">
-                                        <div class="w-2 h-2 rounded-full bg-[#55B76B]"></div>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow">
-                                        <img src="{{ asset('images/image-2.png') }}" 
-                                             alt="Jennie" 
-                                             class="w-20 h-20 rounded-full mb-4 object-cover">
-                                        <h3 class="text-lg font-bold text-[#333333] mb-2">Jennie</h3>
-                                        <p class="text-sm text-center text-gray-600 mb-4 flex-grow">
-                                            "The bamboo cutlery set is perfect for my lunch box. No more disposable plastic utensils!"
-                                        </p>
-                                        <div class="flex gap-1">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-5 h-5 text-[#FFA500]" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                                </svg>
-                                            @endfor
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Review Card 7 -->
-                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3">
-                                <div class="bg-white p-6 rounded-lg shadow-lg relative border border-[#55B76B] h-[300px] flex flex-col">
-                                    <div class="absolute top-4 right-4">
-                                        <div class="w-2 h-2 rounded-full bg-[#55B76B]"></div>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow">
-                                        <img src="{{ asset('images/image.png') }}" 
-                                             alt="Jisoo" 
-                                             class="w-20 h-20 rounded-full mb-4 object-cover">
-                                        <h3 class="text-lg font-bold text-[#333333] mb-2">Jisoo</h3>
-                                        <p class="text-sm text-center text-gray-600 mb-4 flex-grow">
-                                            "These eco-friendly cleaning products are amazing! They clean just as well as conventional ones but better for the environment."
-                                        </p>
-                                        <div class="flex gap-1">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-5 h-5 text-[#FFA500]" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                                </svg>
-                                            @endfor
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Review Card 8 -->
-                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3">
-                                <div class="bg-white p-6 rounded-lg shadow-lg relative border border-[#55B76B] h-[300px] flex flex-col">
-                                    <div class="absolute top-4 right-4">
-                                        <div class="w-2 h-2 rounded-full bg-[#55B76B]"></div>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow">
-                                        <img src="{{ asset('images/image-1.png') }}" 
-                                             alt="Jin" 
-                                             class="w-20 h-20 rounded-full mb-4 object-cover">
-                                        <h3 class="text-lg font-bold text-[#333333] mb-2">Jin</h3>
-                                        <p class="text-sm text-center text-gray-600 mb-4 flex-grow">
-                                            "The quality of GreenKingdom's products is outstanding. The reusable produce bags are sturdy and perfect for grocery shopping!"
-                                        </p>
-                                        <div class="flex gap-1">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-5 h-5 text-[#FFA500]" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                                </svg>
-                                            @endfor
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Review Card 9 -->
-                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3">
-                                <div class="bg-white p-6 rounded-lg shadow-lg relative border border-[#55B76B] h-[300px] flex flex-col">
-                                    <div class="absolute top-4 right-4">
-                                        <div class="w-2 h-2 rounded-full bg-[#55B76B]"></div>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow">
-                                        <img src="{{ asset('images/image-2.png') }}" 
-                                             alt="Suga" 
-                                             class="w-20 h-20 rounded-full mb-4 object-cover">
-                                        <h3 class="text-lg font-bold text-[#333333] mb-2">Suga</h3>
-                                        <p class="text-sm text-center text-gray-600 mb-4 flex-grow">
-                                            "Started with one product, now I've replaced all my household items with GreenKingdom's eco-friendly alternatives. Best decision ever!"
-                                        </p>
-                                        <div class="flex gap-1">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-5 h-5 text-[#FFA500]" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                                </svg>
-                                            @endfor
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
 
                     <!-- Navigation Arrows -->
-                    <button onclick="moveSlide(-1)" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6"
-                        id="prevReview">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path d="M15 19L8 12L15 5" stroke="#333333" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                    <button onclick="moveSlide(1)" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6"
-                        id="nextReview">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 5L16 12L9 19" stroke="#333333" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                    </button>
+                    @if($reviews->count() > 1)
+                        <button onclick="moveSlide(-1)" 
+                                class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-8 bg-white rounded-full p-2 md:p-3 shadow-lg hover:bg-gray-50 hidden sm:block"
+                                id="prevReview">
+                            <svg width="24" height="24" md:width="32" md:height="32" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 19L8 12L15 5" stroke="#333333" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <button onclick="moveSlide(1)" 
+                                class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-8 bg-white rounded-full p-2 md:p-3 shadow-lg hover:bg-gray-50 hidden sm:block"
+                                id="nextReview">
+                            <svg width="24" height="24" md:width="32" md:height="32" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 5L16 12L9 19" stroke="#333333" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    @endif
+
                     <!-- Navigation Dots -->
-                    <div class="flex justify-center gap-2 mt-8">
-                        <button class="w-2 h-2 rounded-full bg-[#55B76B] dot-indicator" data-index="0"></button>
-                        <button class="w-2 h-2 rounded-full bg-gray-300 dot-indicator" data-index="1"></button>
-                        <button class="w-2 h-2 rounded-full bg-gray-300 dot-indicator" data-index="2"></button>
-                    </div>
+                    @if($reviews->count() > 1)
+                        <div class="flex justify-center gap-3 mt-8">
+                            @for($i = 0; $i < ceil($reviews->count() / (isset($isMobile) ? 1 : (isset($isTablet) ? 2 : 3))); $i++)
+                                <button class="w-3 h-3 sm:w-2 sm:h-2 rounded-full {{ $i === 0 ? 'bg-[#55B76B]' : 'bg-[#D1D5DB]' }} dot-indicator" 
+                                        data-index="{{ $i }}"></button>
+                            @endfor
+                        </div>
+                    @endif
+
+                    @if (Auth::check())
+                        <!-- Add Review Button -->
+                        <div class="flex justify-center mt-8">
+                            <a href="{{ route('reviews.create') }}" 
+                               class="inline-flex items-center px-6 py-2 text-base font-medium rounded-md text-[#FFFFFF] bg-[#55B76B] hover:bg-[#3B8B4B] transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                                Add Your Review
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -680,9 +494,8 @@
                     <div class="flex justify-center items-center mb-8 lg:mb-0">
                         <img src="{{ asset('images/auth_logo.png') }}" alt="GreenKingdom" class="w-48">
                     </div>
-
                     <!-- Login Content -->
-                    <div class="flex-1">
+                <div class="flex-1">
                         <!-- Login Text -->
                         <h2 class="text-2xl font-bold text-center lg:text-left text-[#333333] mb-2">Login</h2>
                         <p class="text-center lg:text-left text-gray-600 mb-8">
@@ -690,6 +503,12 @@
                             insightful content straight to your inbox!
                         </p>
 
+                        @if (session('error'))
+                            <div class="mb-4 p-4 bg-[#FEE2E2] border border-[#F87171] text-[#DC2626] rounded-lg">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+                        
                         <!-- Login Form -->
                         <form class="space-y-6" method="POST" action="{{ route('user.login') }}">
                             @csrf
@@ -729,48 +548,58 @@
     @include('components.footer')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOMContentLoaded');
             const slider = document.getElementById('reviewsSlider');
             const prevButton = document.getElementById('prevReview');
             const nextButton = document.getElementById('nextReview');
             const dots = document.querySelectorAll('.dot-indicator');
-
+            
             let currentIndex = 0;
-            const totalSlides = 3;
+            const isMobile = window.innerWidth < 768; // md breakpoint
+            const itemsPerSlide = isMobile ? 1 : 3;
+            const totalItems = {{ $reviews->count() }};
+            const totalSlides = Math.ceil(totalItems / itemsPerSlide);
 
             function updateSliderPosition() {
-                const slideWidth = 100;
-                slider.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
+                const translateValue = currentIndex * (100 / itemsPerSlide);
+                slider.style.transform = `translateX(-${translateValue}%)`;
 
                 // Update dots
                 dots.forEach((dot, index) => {
                     dot.classList.toggle('bg-[#55B76B]', index === currentIndex);
-                    dot.classList.toggle('bg-gray-300', index !== currentIndex);
+                    dot.classList.toggle('bg-[#D1D5DB]', index !== currentIndex);
                 });
+
+                // Update button states
+                if (prevButton) prevButton.style.display = currentIndex === 0 ? 'none' : 'block';
+                if (nextButton) nextButton.style.display = currentIndex === totalSlides - 1 ? 'none' : 'block';
             }
 
-            function showPrevSlide() {
-                currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+            function moveSlide(direction) {
+                currentIndex = Math.max(0, Math.min(totalSlides - 1, currentIndex + direction));
                 updateSliderPosition();
             }
 
-            function showNextSlide() {
-                currentIndex = (currentIndex + 1) % totalSlides;
-                updateSliderPosition();
-            }
+            // Touch events for mobile swipe
+            let touchStartX = 0;
+            let touchEndX = 0;
 
-            // Event Listeners
-            prevButton.addEventListener('click', showPrevSlide);
-            nextButton.addEventListener('click', showNextSlide);
+            slider.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
 
-            // Keyboard navigation
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'ArrowLeft') {
-                    showPrevSlide();
-                } else if (event.key === 'ArrowRight') {
-                    showNextSlide();
+            slider.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) { // minimum swipe distance
+                    moveSlide(diff > 0 ? 1 : -1);
                 }
             });
+
+            // Event Listeners
+            if(prevButton && nextButton) {
+                prevButton.addEventListener('click', () => moveSlide(-1));
+                nextButton.addEventListener('click', () => moveSlide(1));
+            }
 
             // Dot navigation
             dots.forEach((dot, index) => {
@@ -780,8 +609,8 @@
                 });
             });
 
-            // Auto-advance slides every 5 seconds
-            setInterval(showNextSlide, 5000);
+            // Initial position
+            updateSliderPosition();
         });
     </script>
     </div>

@@ -15,7 +15,7 @@
                     <li><a href="{{ route('catalog') }}" class="font-semibold">Shop</a></li>
                     <li><a class="font-semibold">Categories</a></li>
                     <li><a href="{{ route('home') }}/#about" class="font-semibold">About Us</a></li>
-                    <li><a href="{{ route('home') }}/#contact" class="font-semibold">Contact Us</a></li>
+                    <li><a href="{{ route('home') }}/#footer" class="font-semibold">Contact Us</a></li>
                 </ul>
             </div>
             @include('components.icon')
@@ -42,7 +42,7 @@
                 </li>
                 <li><a href="{{ route('home') }}/#about" class="font-semibold text-blue hover:bg-[#55B76B] hover:text-white">About Us</a>
                 </li>
-                <li><a href="{{ route('home') }}/#contact" class="font-semibold text-blue hover:bg-[#55B76B] hover:text-white">Contact
+                <li><a href="{{ route('home') }}/#footer" class="font-semibold text-blue hover:bg-[#55B76B] hover:text-white">Contact
                         Us</a></li>
             </ul>
         </div>

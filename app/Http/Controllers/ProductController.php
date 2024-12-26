@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Spatie\QueryBuilder\QueryBuilder;
 use App\Models\Category;
 use Binafy\LaravelCart\Models\Cart;
+use App\Models\Review;
 
 class ProductController extends Controller
 {
@@ -208,8 +209,13 @@ class ProductController extends Controller
 
     public function contohProduk()
     {
-        $products = Product::limit(8)->get();
-        return view("welcome", compact("products"));
+        $products = Product::take(8)->get();
+        $reviews = Review::with('user')
+                        ->latest()
+                        ->take(9)  // Get latest 9 reviews
+                        ->get();
+        
+        return view('welcome', compact('products', 'reviews'));
     }
 
     public function catalog(Request $request)
